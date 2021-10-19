@@ -7,3 +7,9 @@ def home(request):
 
 def deepsearch(request):
     return render(request, 'deepsearch.html')
+
+def sparql(request):
+    return render(request, 'sparql.html')
+
+def login(request):
+    return render(request, 'login.html')
