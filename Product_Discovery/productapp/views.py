@@ -11,5 +11,9 @@ def deepsearch(request):
 def sparql(request):
     return render(request, 'sparql.html')
 
-def login(request):
+def login_method(request):
+    if(request.method=='POST'):
+        username = request.POST['username']
+        password = request.POST['password']
+        print(username+ " "+ password)
     return render(request, 'login.html')
