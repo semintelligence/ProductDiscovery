@@ -186,7 +186,7 @@
                   hover:underline
                   md:mx-4 md:my-0
                 "
-                href="#"
+                href="/add"
                 >Add Products</a
               >
             </div>
@@ -320,7 +320,7 @@
                 {% if next %}
                 <p> you can't access that page </p>
                 {% endif %}
-                <form method="POST" action="{% url 'login' %}" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
+                <form method="POST" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
                 {% csrf_token %}
                     <div class="pb-2 pt-4">
                         <input type="text" name="username" id="username" placeholder="username" class="block w-full p-4 text-lg rounded-2xl bg-white text-yellow-700 dark:text-yellow-300 shadow shadow-2xl">

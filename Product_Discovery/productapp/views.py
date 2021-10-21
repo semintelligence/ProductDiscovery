@@ -1,5 +1,6 @@
-from django.shortcuts import render
-from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect
+from django.contrib.auth.views import LoginView , LogoutView
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -11,6 +12,15 @@ def deepsearch(request):
 
 def sparql(request):
     return render(request, 'sparql.html')
+
+def add(request):
+    if request.user.is_authenticated:
+        return render(request, 'additems.html')
+    return redirect('login/')
+
 class Login(LoginView):
-    template_name = "/registration/login.html"
-    redirect_authenticed_user= True
+    template_name = "registration/login.html"
+    redirect_authenticated_user = True
+
+class LogOut(LogoutView):
+    pass
