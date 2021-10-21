@@ -195,6 +195,7 @@
               >
             </div>
 
+            {% if user.is_authenticated %}
             <div class="flex items-center py-2 -mx-1 md:mx-0">
               <a
                 class="
@@ -215,10 +216,36 @@
                   hover:bg-yellow-600
                   md:mx-2 md:w-auto
                 "
-                href="/login"
+                href="/logout/"
+                >Logout</a
+              >
+            </div>
+            {% else %}
+            <div class="flex items-center py-2 -mx-1 md:mx-0">
+              <a
+                class="
+                  block
+                  w-1/2
+                  px-3
+                  py-2
+                  mx-1
+                  text-sm
+                  font-medium
+                  leading-5
+                  text-center text-yellow
+                  transition-colors
+                  duration-200
+                  transform
+                  bg-yellow-500
+                  rounded-md
+                  hover:bg-yellow-600
+                  md:mx-2 md:w-auto
+                "
+                href="/login/"
                 >Admin Login</a
               >
             </div>
+            {% endif %}
 
             <!-- Search input on mobile screen -->
             <div class="mt-3 md:hidden">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HomePage</title>
+    <title>SPARQL</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -195,6 +195,7 @@
               >
             </div>
 
+            {% if user.is_authenticated %}
             <div class="flex items-center py-2 -mx-1 md:mx-0">
               <a
                 class="
@@ -215,10 +216,36 @@
                   hover:bg-yellow-600
                   md:mx-2 md:w-auto
                 "
-                href="/login"
+                href="/logout/"
+                >Logout</a
+              >
+            </div>
+            {% else %}
+            <div class="flex items-center py-2 -mx-1 md:mx-0">
+              <a
+                class="
+                  block
+                  w-1/2
+                  px-3
+                  py-2
+                  mx-1
+                  text-sm
+                  font-medium
+                  leading-5
+                  text-center text-yellow
+                  transition-colors
+                  duration-200
+                  transform
+                  bg-yellow-500
+                  rounded-md
+                  hover:bg-yellow-600
+                  md:mx-2 md:w-auto
+                "
+                href="/login/"
                 >Admin Login</a
               >
             </div>
+            {% endif %}
 
             <!-- Search input on mobile screen -->
             <div class="mt-3 md:hidden">
@@ -299,7 +326,7 @@
       <form class="flex flex-wrap -m-2" method="post" >
           {% csrf_token %}
         <div class="p-2 w-full">
-          <textarea class="w-full bg-white rounded border border-yellow-700 text-yellow-700 dark:text-yellow-300 focus:outline-none h-64 focus:border-yellow-500 text-base px-4 py-2 resize-none block" placeholder="Input your query here. " name="contacter_messege" required maxlength="2000"></textarea>
+          <textarea class="w-full bg-white rounded rounded-2xl border shadow shadow-xl border-yellow-700 text-yellow-700 dark:text-yellow-300 focus:outline-none h-64 focus:border-yellow-500 text-base px-4 py-2 resize-none block" placeholder="Input your query here. " name="contacter_messege" required maxlength="2000"></textarea>
         </div>
         <div class="p-2 w-full">
           <button class="flex mx-auto text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg" type="submit">Submit</button>

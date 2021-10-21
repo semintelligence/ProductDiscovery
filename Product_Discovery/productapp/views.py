@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.views import LoginView
 
 # Create your views here.
 
@@ -10,10 +11,6 @@ def deepsearch(request):
 
 def sparql(request):
     return render(request, 'sparql.html')
-
-def login_method(request):
-    if(request.method=='POST'):
-        username = request.POST['username']
-        password = request.POST['password']
-        print(username+ " "+ password)
-    return render(request, 'login.html')
+class Login(LoginView):
+    template_name = "/registration/login.html"
+    redirect_authenticed_user= True
