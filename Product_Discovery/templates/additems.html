@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SPARQL</title>
+    <title>Add Products</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
@@ -316,8 +316,52 @@
         </div>
       </div>
     </nav>
+<!-- component -->
+<div class="relative min-h flex items-center justify-center bg-yellow-200 py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover relative items-center"
+	style="background-image: url();">
+	<div class="absolute  inset-0 z-0"></div>
+	<div class="sm:max-w-lg w-full p-10 bg-white rounded-2xl shadow shadow-lg z-10">
+		<div class="text-center">
+			<h2 class="mt-5 text-3xl font-bold text-gray-900">
+				File Upload!
+			</h2>
+			<p class="mt-2 text-sm text-gray-400">Add products into the database.</p>
+		</div>
+        <form class="mt-8 space-y-3" enctype="multipart/form-data" method="POST">
+                  {% csrf_token %}
+                    <div class="grid grid-cols-1 space-y-2">
+                                    <label class="text-sm font-bold text-gray-500 tracking-wide">Attach File</label>
+                        <div class="flex items-center justify-center w-full">
+                            <label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
+                                <div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
+                                    <div class="flex flex-auto max-h-48 w-2/5 mx-auto -mt-10">
+                                    <img class="has-mask h-36 object-center" src="https://img.freepik.com/free-vector/image-upload-concept-landing-page_52683-27130.jpg?size=338&ext=jpg" alt="freepik image">
+                                    </div>
+                                    <p class="pointer-none text-gray-500 "><span class="text-sm">Drag and drop</span> files here <br /> or <a href="" id="" class="text-yellow-600 hover:underline">select a file</a> from your computer</p>
+                                </div>
+                                <input type="file" class="hidden" name="document">
+                            </label>
+                        </div>
+                    </div>
+                            <p class="text-sm text-gray-300">
+                                <span>File type: doc,pdf,types of images</span>
+                            </p>
+                    <div>
+                        <button type="submit" class="my-5 w-full flex justify-center bg-yellow-500 text-gray-100 p-4  rounded-full tracking-wide
+                                    font-semibold  focus:outline-none focus:shadow-outline hover:bg-yellow-600 shadow-lg cursor-pointer transition ease-in duration-300">
+                        Upload
+                    </button>
+                    </div>
+        </form>
+	</div>
+</div>
 
-    <h1> Add items </h1>
+<style>
+	.has-mask {
+		position: absolute;
+		clip: rect(10px, 150px, 130px, 10px);
+	}
+</style>
    <footer
       class="
         flex flex-col

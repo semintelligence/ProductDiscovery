@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView , LogoutView
-from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -13,10 +13,21 @@ def deepsearch(request):
 def sparql(request):
     return render(request, 'sparql.html')
 
+
 def add(request):
+    context = {}
     if request.user.is_authenticated:
+        if request.method == 'POST':
+            uploaded_file = request.FILES['document']
+            fs = FileSystemStorage()
+            name = fs.save(uploaded_file.name, uploaded_file)
+            context['url'] = fs.url(name)
+            return render(request, 'additems.html', context)
         return render(request, 'additems.html')
-    return redirect('login/')
+    else:
+        return redirect('login/')
+
+    
 
 class Login(LoginView):
     template_name = "registration/login.html"
