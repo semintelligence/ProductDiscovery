@@ -25,6 +25,28 @@ def deepsearch(request):
         url = "https://product-discovery-service.herokuapp.com/recommendProduct?Category"+category+"&Brand" + brand + "&RAM" + ram + "&OperatingSystem" +operatingsystem +"&PriceInEuros" + priceineuros + "&Quantity" + quantity + "&Seller" + seller + "&CPU" + cpu + "&GPU" + gpu + "&ScreenSize" + screensize + "&ScreenType"+screentype+"&Storage" + storage
         res = requests.get(url)
         resList = res.text.split(',')
+        modelNo = []
+        name = []
+        price = []
+        image = []
+        for item in resList:
+            index1 = item.find("?ProductModelNo = ") + len("?ProductModelNo = ")
+            index2 = index1 + item[index1:].find(">")
+            modelNo.append(item[index1:index2+1])  
+            index1 = item.find("?ProductName = ")  + len("?ProductName = ")
+            index2 = index1 + item[index1+2:].find(chr(92))
+            res = item[index1 + 2:index2+1]
+            if(res.find("(")): res = res.replace("(","")
+            name.append(res)
+            index1 = item.find("?Price = ") + len("?Price = ")
+            index2 = index1 + item[index1:].find('"')
+            temp = item[index2+2:index2+12]
+            index3 = temp.find("^")
+            price.append(item[index2+1:index2+index3])
+            index1 = item.find("?Image = ") + len("?Image = ")
+            index2 = index1 + item[index1:].find(")")
+            image.append(item[index1+1:index2-2])
+        
         return render(request,'deepsearchproduct.html')
     return render(request, 'deepsearch.html')
 
@@ -32,7 +54,7 @@ def sparql(request):
     return render(request, 'sparql.html')
 
 
-def add(request):
+def add(request):   
     context = {}
     if request.user.is_authenticated:
         if request.method == 'POST':
