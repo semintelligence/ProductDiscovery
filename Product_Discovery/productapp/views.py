@@ -46,8 +46,10 @@ def deepsearch(request):
             index1 = item.find("?Image = ") + len("?Image = ")
             index2 = index1 + item[index1:].find(")")
             image.append(item[index1+1:index2-2])
-        
-        return render(request,'deepsearchproduct.html')
+        res = {
+            'result': zip(modelNo, name ,price,image)
+        }
+        return render(request,'deepsearchproduct.html',context=res)
     return render(request, 'deepsearch.html')
 
 def sparql(request):
