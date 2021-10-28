@@ -8,4 +8,5 @@ urlpatterns = [
     path('deepsearch',views.deepsearch,name='deepsearch'),
     path('sparql', views.sparql, name='sparql'),
     path('add', views.add, name="add"),
+    path('search',views.search,name="search ")
 ]

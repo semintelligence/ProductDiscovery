@@ -8,6 +8,16 @@ import requests
 def home(request):
     return render(request, 'index.html')
 
+def search(request):
+    keyword = request.POST.get("keyword1")
+    if(keyword==""): keyword = request.POST.get("keyword2")
+    url = "https://product-discovery-service.herokuapp.com/rapidInformationExplorer?keyword="+keyword
+    result = requests.get(url)
+    result = result.text.split(',')
+    # left here
+    return render(request, "res.html")
+
+
 def deepsearch(request):
     if(request.method == 'POST'):
         category  = "=" + request.POST.get('category')
@@ -23,8 +33,8 @@ def deepsearch(request):
         screentype  = "=" +request.POST.get('screentype')
         storage  = "=" +request.POST.get('storage')
         url = "https://product-discovery-service.herokuapp.com/recommendProduct?Category"+category+"&Brand" + brand + "&RAM" + ram + "&OperatingSystem" +operatingsystem +"&PriceInEuros" + priceineuros + "&Quantity" + quantity + "&Seller" + seller + "&CPU" + cpu + "&GPU" + gpu + "&ScreenSize" + screensize + "&ScreenType"+screentype+"&Storage" + storage
-        res = requests.get(url)
-        resList = res.text.split(',')
+        resList = requests.get(url)
+        resList = resList.text.split(',')
         modelNo = []
         name = []
         price = []
