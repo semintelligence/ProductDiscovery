@@ -57,7 +57,8 @@
                       ></path>
                     </svg>
                   </span>
-                  <form class="flex">
+                  <form class="flex" action="search" method="post">
+                    {% csrf_token %}
                     <input
                       type="text"
                       class="
@@ -77,6 +78,8 @@
                         focus:outline-none focus:ring
                       "
                       placeholder="Search"
+                      name = "keyword1"
+                      required
                     />
                     <button
                       class="
@@ -194,7 +197,6 @@
                 >Add Products</a
               >
             </div>
-
             {% if user.is_authenticated %}
             <div class="flex items-center py-2 -mx-1 md:mx-0">
               <a
@@ -216,7 +218,7 @@
                   hover:bg-yellow-600
                   md:mx-2 md:w-auto
                 "
-                href="/logout/"
+                href="logout/"
                 >Logout</a
               >
             </div>
@@ -241,7 +243,7 @@
                   hover:bg-yellow-600
                   md:mx-2 md:w-auto
                 "
-                href="/login/"
+                href="/login"
                 >Admin Login</a
               >
             </div>
@@ -265,7 +267,8 @@
                     ></path>
                   </svg>
                 </span>
-                <form class="flex">
+                <form class="flex" action="search" method="post">
+                {% csrf_token %}
                   <input
                     type="text"
                     class="
@@ -285,6 +288,8 @@
                       focus:outline-none focus:ring
                     "
                     placeholder="Search"
+                    name = "keyword2"
+                    required
                   />
                   <button
                     class="

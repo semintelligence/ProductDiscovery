@@ -14,8 +14,28 @@ def search(request):
     url = "https://product-discovery-service.herokuapp.com/rapidInformationExplorer?keyword="+keyword
     result = requests.get(url)
     result = result.text.split(',')
-    # left here
-    return render(request, "res.html")
+    modelNo = []
+    name = []
+    price = []
+    image = []
+    for item in result:
+        image.append("https://source.unsplash.com/featured/?" +str(len(name)))
+        index1 = item.find("?Subject = <") + len("?Subject = <")
+        index2 = item.find("> ) ( ?P")
+        modelNo.append(item[index1:index2])
+        index1 = item.find("( ?Property = <") + len("( ?Property = <")
+        index2 = item.find("> ) ( ?O")
+        name.append(item[index1:index2])
+        index1 = item.find("?Object = ") + len("?Object = ")
+        index2 = index1 + item[index1+2:].find(chr(92))
+        res = item[index1+2:index2+2]
+        if(res.find("(")): res = res.replace("(","")
+        if(res.find(")")): res = res.replace(")","")
+        price.append(res)
+    res = {
+            'result': zip(modelNo, name ,price,image)
+        }
+    return render(request, "deepsearchproduct.html", context=res)
 
 
 def deepsearch(request):
@@ -52,10 +72,11 @@ def deepsearch(request):
             index2 = index1 + item[index1:].find('"')
             temp = item[index2+2:index2+12]
             index3 = temp.find("^")
-            price.append(item[index2+1:index2+index3])
+            price.append(item[index2+1:index2+index3] + " €")
             index1 = item.find("?Image = ") + len("?Image = ")
             index2 = index1 + item[index1:].find(")")
-            image.append(item[index1+1:index2-2])
+            # image.append(item[index1+1:index2-2])
+            image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
         res = {
             'result': zip(modelNo, name ,price,image)
         }
