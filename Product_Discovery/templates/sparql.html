@@ -321,6 +321,9 @@
         </div>
       </div>
     </nav>
+    {% if flag %}
+    <h4 align="center">{{ msg }}</h4>
+    {% endif %}
 <section class="text-yellow-500 bg-yellow-200 body-font relative shadow-xl">
     <div class="container px-5 py-24 mx-auto">
     <div class="flex flex-col text-center w-full mb-12">
@@ -331,7 +334,7 @@
       <form class="flex flex-wrap -m-2" method="post" >
           {% csrf_token %}
         <div class="p-2 w-full">
-          <textarea class="w-full bg-white rounded rounded-2xl border shadow shadow-xl border-yellow-700 text-yellow-700 dark:text-yellow-300 focus:outline-none h-64 focus:border-yellow-500 text-base px-4 py-2 resize-none block" placeholder="Input your query here. " name="contacter_messege" required maxlength="2000"></textarea>
+          <textarea class="w-full bg-white rounded rounded-2xl border shadow shadow-xl border-yellow-700 text-yellow-700 dark:text-yellow-300 focus:outline-none h-64 focus:border-yellow-500 text-base px-4 py-2 resize-none block" placeholder="Input your query here. " name="main_query" required maxlength="2000"></textarea>
         </div>
         <div class="p-2 w-full">
           <button class="flex mx-auto text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg" type="submit">Submit</button>

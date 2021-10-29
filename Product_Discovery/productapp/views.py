@@ -84,6 +84,34 @@ def deepsearch(request):
     return render(request, 'deepsearch.html')
 
 def sparql(request):
+    if request.method == 'POST':
+        url = "https://product-discovery-service.herokuapp.com/sparqlEndpoint"
+        query = request.POST.get("main_query")
+        res = requests.post(url,data=query)
+        if(res.status_code   == 500):
+            return render(request, 'sparql.html', context={'flag': True, 'msg': "something went wrong"})
+        modelNo = []
+        name = []
+        price = []
+        image = []
+        res = res.text.split(',')
+        for item  in res:
+            image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
+            index1 = item.find("?ProductName = ") + len("?ProductName = ") +2
+            index2 = item.find('" ) ( ?B') -1
+            modelNo.append(item[index1:index2])
+            index1 = item.find('''?Brand = <http://rdf-dump/eeo/0.1/''') + len('''?Brand = <http://rdf-dump/eeo/0.1/''')
+            index2 = item.find("> ) ( ?Seller")
+            name.append(item[index1:index2])
+            index1 = item.find("?Price = ") + len("?Price = ")
+            index2 = index1 + item[index1:].find('"')
+            temp = item[index2+2:index2+12]
+            index3 = temp.find("^")
+            price.append(item[index2+1:index2+index3] + " €")
+        res = {
+            'result': zip(modelNo, name ,price,image),
+        }
+        return render(request,'deepsearchproduct.html',context=res)
     return render(request, 'sparql.html')
 
 
