@@ -1,0 +1,1 @@
+web: gunicorn Product_Discovery.wsgi
