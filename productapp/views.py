@@ -122,11 +122,12 @@ def add(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
             uploaded_file = request.FILES['document']
-            # fs = FileSystemStorage()
-            # name = fs.save(uploaded_file.name, uploaded_file)
-            # context['url'] = fs.url(name)
+            url = "https://product-discovery-service.herokuapp.com/uploadProductCatalog"
+            r = requests.post(url,files={"file": uploaded_file})
+            context = {"flag": True,"responce": r.text}
             return render(request, 'additems.html', context)
-        return render(request, 'additems.html')
+        context = {"flag": False}  
+        return render(request, 'additems.html',context)
     else:
         return redirect('login/')
 
