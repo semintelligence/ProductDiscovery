@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView , LogoutView
 from django.core.files.storage import FileSystemStorage
 import requests
 from django.conf import settings
+from requests.models import ReadTimeoutError
 
 
 # Create your views here.
@@ -67,8 +68,9 @@ def deepsearch(request):
             modelNo.append(item[index1:index2+1])  
             index1 = item.find("?ProductName = ")  + len("?ProductName = ")
             index2 = index1 + item[index1+2:].find(chr(92))
-            res = item[index1 + 2:index2+1]
+            res = item[index1 + 2:index2+2]
             if(res.find("(")): res = res.replace("(","")
+            if(res.find(")")): res = res.replace(")","")
             name.append(res)
             index1 = item.find("?Price = ") + len("?Price = ")
             index2 = index1 + item[index1:].find('"')
@@ -131,7 +133,10 @@ def add(request):
     else:
         return redirect('login/')
 
-    
+def filter(request):
+    if(request.method=="POST"):
+        products = request.POST.get("products") 
+        return redirect("/")
 
 class Login(LoginView):
     template_name = "registration/login.html"
