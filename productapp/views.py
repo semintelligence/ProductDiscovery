@@ -4,6 +4,9 @@ from django.core.files.storage import FileSystemStorage
 import requests
 from django.conf import settings
 from requests.models import ReadTimeoutError
+import re
+import numpy as np
+from django.urls import reverse
 
 
 # Create your views here.
@@ -36,56 +39,79 @@ def search(request):
         if(res.find(")")): res = res.replace(")","")
         price.append(res)
     res = {
-            'result': zip(modelNo, name ,price,image)
+            'result': list(zip(modelNo, name ,price,image))
         }
     return render(request, "deepsearchproduct.html", context=res)
 
 
 def deepsearch(request):
     if(request.method == 'POST'):
-        category  = "=" + request.POST.get('category')
-        brand  = "=" +request.POST.get('brand')
-        ram  = "=" +request.POST.get('ram')
-        operatingsystem  = "=" +request.POST.get('operatingsystem')
-        priceineuros  = "=" +request.POST.get('priceineuros')
-        quantity  = "=" +request.POST.get('quantity')
-        seller  = "=" +request.POST.get('seller')
-        cpu  = "=" +request.POST.get('cpu')
-        gpu  = "=" +request.POST.get('gpu')
-        screensize  = "=" +request.POST.get('screensize')
-        screentype  = "=" +request.POST.get('screentype')
-        storage  = "=" +request.POST.get('storage')
-        url = "https://product-discovery-service.herokuapp.com/recommendProduct?Category"+category+"&Brand" + brand + "&RAM" + ram + "&OperatingSystem" +operatingsystem +"&PriceInEuros" + priceineuros + "&Quantity" + quantity + "&Seller" + seller + "&CPU" + cpu + "&GPU" + gpu + "&ScreenSize" + screensize + "&ScreenType"+screentype+"&Storage" + storage
-        resList = requests.get(url)
-        resList = resList.text.split(',')
-        modelNo = []
-        name = []
-        price = []
-        image = []
-        for item in resList:
-            index1 = item.find("?ProductModelNo = ") + len("?ProductModelNo = ")
-            index2 = index1 + item[index1:].find(">")
-            modelNo.append(item[index1:index2+1])  
-            index1 = item.find("?ProductName = ")  + len("?ProductName = ")
-            index2 = index1 + item[index1+2:].find(chr(92))
-            res = item[index1 + 2:index2+2]
-            if(res.find("(")): res = res.replace("(","")
-            if(res.find(")")): res = res.replace(")","")
-            name.append(res)
-            index1 = item.find("?Price = ") + len("?Price = ")
-            index2 = index1 + item[index1:].find('"')
-            temp = item[index2+2:index2+12]
-            index3 = temp.find("^")
-            price.append(item[index2+1:index2+index3] + " €")
-            index1 = item.find("?Image = ") + len("?Image = ")
-            index2 = index1 + item[index1:].find(")")
-            # image.append(item[index1+1:index2-2])
-            image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
-        res = {
-            'result': zip(modelNo, name ,price,image)
-        }
+        if(request.POST.get("method") == "sort"):
+            model = request.POST.get("products")
+            method = request.POST["option"] == "sortA"
+            model,name,price,image = zip(*eval(model))
+            model = list(model)
+            name  = list(name)
+            price = list(price)
+            image = list(image)
+            price = [float(re.findall(r"[-+]?\d*\.\d+|\d+", i)[0]) for i in price ]  # converting list of string to list of float using regular expression
+            if(method):
+                arg = np.argsort(price)
+            else:
+                arg = np.argsort(price)[::-1]
+            price = list(np.array(price)[arg])
+            price = [str(i)+ " €" for i in price]
+            name = list(np.array(name)[arg])
+            image = list(np.array(image)[arg])
+            model = list(np.array(model)[arg])
+            res = {
+                'result': list(zip(model, name ,price,image)),
+            }
+        else:
+            category  = "=" + request.POST.get('category')
+            brand  = "=" +request.POST.get('brand')
+            ram  = "=" +request.POST.get('ram')
+            operatingsystem  = "=" +request.POST.get('operatingsystem')
+            priceineuros  = "=" +request.POST.get('priceineuros')
+            quantity  = "=" +request.POST.get('quantity')
+            seller  = "=" +request.POST.get('seller')
+            cpu  = "=" +request.POST.get('cpu')
+            gpu  = "=" +request.POST.get('gpu')
+            screensize  = "=" +request.POST.get('screensize')
+            screentype  = "=" +request.POST.get('screentype')
+            storage  = "=" +request.POST.get('storage')
+            url = "https://product-discovery-service.herokuapp.com/recommendProduct?Category"+category+"&Brand" + brand + "&RAM" + ram + "&OperatingSystem" +operatingsystem +"&PriceInEuros" + priceineuros + "&Quantity" + quantity + "&Seller" + seller + "&CPU" + cpu + "&GPU" + gpu + "&ScreenSize" + screensize + "&ScreenType"+screentype+"&Storage" + storage
+            resList = requests.get(url)
+            resList = resList.text.split(',')
+            modelNo = []
+            name = []
+            price = []
+            image = []
+            for item in resList:
+                index1 = item.find("?ProductModelNo = ") + len("?ProductModelNo = ")
+                index2 = index1 + item[index1:].find(">")
+                modelNo.append(item[index1:index2+1])  
+                index1 = item.find("?ProductName = ")  + len("?ProductName = ")
+                index2 = index1 + item[index1+2:].find(chr(92))
+                res = item[index1 + 2:index2+2]
+                if(res.find("(")): res = res.replace("(","")
+                if(res.find(")")): res = res.replace(")","")
+                name.append(res)
+                index1 = item.find("?Price = ") + len("?Price = ")
+                index2 = index1 + item[index1:].find('"')
+                temp = item[index2+2:index2+12]
+                index3 = temp.find("^")
+                price.append(item[index2+1:index2+index3] + " €")
+                index1 = item.find("?Image = ") + len("?Image = ")
+                index2 = index1 + item[index1:].find(")")
+                # image.append(item[index1+1:index2-2])
+                image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
+            res = {
+                'result': list(zip(modelNo, name ,price,image))
+            }
         return render(request,'deepsearchproduct.html',context=res)
-    return render(request, 'deepsearch.html')
+    else:
+        return render(request, 'deepsearch.html')
 
 def sparql(request):
     if request.method == 'POST':
@@ -94,7 +120,7 @@ def sparql(request):
         res = requests.post(url,data=query)
         if(res.status_code   == 500):
             return render(request, 'sparql.html', context={'flag': True, 'msg': "something went wrong"})
-        modelNo = []
+        model = []
         name = []
         price = []
         image = []
@@ -103,7 +129,7 @@ def sparql(request):
             image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
             index1 = item.find("?ProductName = ") + len("?ProductName = ") +2
             index2 = item.find('" ) ( ?B') -1
-            modelNo.append(item[index1:index2])
+            model.append(item[index1:index2])
             index1 = item.find('''?Brand = <http://rdf-dump/eeo/0.1/''') + len('''?Brand = <http://rdf-dump/eeo/0.1/''')
             index2 = item.find("> ) ( ?Seller")
             name.append(item[index1:index2])
@@ -113,7 +139,7 @@ def sparql(request):
             index3 = temp.find("^")
             price.append(item[index2+1:index2+index3] + " €")
         res = {
-            'result': zip(modelNo, name ,price,image),
+            'result': list(zip(model, name ,price,image)),
         }
         return render(request,'deepsearchproduct.html',context=res)
     return render(request, 'sparql.html')
@@ -132,11 +158,6 @@ def add(request):
         return render(request, 'additems.html',context)
     else:
         return redirect('login/')
-
-def filter(request):
-    if(request.method=="POST"):
-        products = request.POST.get("products") 
-        return redirect("/")
 
 class Login(LoginView):
     template_name = "registration/login.html"

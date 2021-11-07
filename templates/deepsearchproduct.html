@@ -252,7 +252,7 @@
     </nav>
 
     <!-- This is an example component -->
-    <form action="filter" method="post" >
+    <form action="deepsearch" method="post" >
 {% csrf_token %}
         <div class="relative inline-flex m-5 ">
             <svg class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none " xmlns="http://www.w3.org/2000/svg " viewBox="0 0 412 232 ">
@@ -261,12 +261,13 @@
         0L206 171.144z "
           fill="#648299 " fill-rule="nonzero " />
             </svg>
-      <select required name="option " class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none ">
-        <option value="sortA ">Sort by price Ascending</option>
-        <option value="sortD ">Sort by price Desending</option>
+      <select required name="option" class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none ">
+        <option value="sortA">Sort by price Ascending</option>
+        <option value="sortD">Sort by price Desending</option>
       </select>
       <input hidden name="products" value="{{ result }}">
-      <button class="block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200transform bg-yellow-500 rounded-md hover:bg-yellow-600 md:mx-2 md:w-auto " type="submit ">Submit
+      <input hidden name="method" value="sort">
+      <button class="block w-1/2 px-3 py-2 mx-1 text-sm font-medium leading-5 text-center text-white transition-colors duration-200transform bg-yellow-500 rounded-md hover:bg-yellow-600 md:mx-2 md:w-auto " type="submit">Submit
       </button>
         </div>
 
