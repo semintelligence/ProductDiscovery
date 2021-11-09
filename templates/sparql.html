@@ -181,6 +181,9 @@
                 href="/deepsearch"
                 >Deep Search</a
               >
+
+            </div>
+            {% if user.is_authenticated %}
               <a
                 class="
                   my-1
@@ -196,8 +199,6 @@
                 href="/add"
                 >Add Products</a
               >
-            </div>
-            {% if user.is_authenticated %}
             <div class="flex items-center py-2 -mx-1 md:mx-0">
               <a
                 class="
@@ -223,6 +224,21 @@
               >
             </div>
             {% else %}
+              <a hidden
+                class="
+                  my-1
+                  text-sm
+                  leading-5
+                  text-yellow-700
+                  dark:text-yellow-200
+                  hover:text-yellow-600
+                  dark:hover:text-yellow-400
+                  hover:underline
+                  md:mx-4 md:my-0
+                "
+                href="/add"
+                >Add Products</a
+              >
             <div class="flex items-center py-2 -mx-1 md:mx-0">
               <a
                 class="

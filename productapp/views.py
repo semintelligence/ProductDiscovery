@@ -53,19 +53,21 @@ def deepsearch(request):
             model = list(model)
             name  = list(name)
             price = list(price)
-            image = list(image)
-            price = [float(re.findall(r"[-+]?\d*\.\d+|\d+", i)[0]) for i in price ]  # converting list of string to list of float using regular expression
+            image = list(image)  
             if(method):
                 arg = np.argsort(price)
             else:
                 arg = np.argsort(price)[::-1]
             price = list(np.array(price)[arg])
-            price = [str(i)+ " €" for i in price]
             name = list(np.array(name)[arg])
             image = list(np.array(image)[arg])
             model = list(np.array(model)[arg])
+            minimum = int(request.POST.get("min"))
+            maximum = int(request.POST.get("max"))
             res = {
                 'result': list(zip(model, name ,price,image)),
+                'minimum': minimum,
+                'maximum': maximum
             }
         else:
             category  = "=" + request.POST.get('category')
@@ -101,13 +103,18 @@ def deepsearch(request):
                 index2 = index1 + item[index1:].find('"')
                 temp = item[index2+2:index2+12]
                 index3 = temp.find("^")
-                price.append(item[index2+1:index2+index3] + " €")
+                price.append(item[index2+1:index2+index3])
                 index1 = item.find("?Image = ") + len("?Image = ")
                 index2 = index1 + item[index1:].find(")")
                 # image.append(item[index1+1:index2-2])
                 image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
+            price = [float(re.findall(r"[-+]?\d*\.\d+|\d+", i)[0]) for i in price] # converting list of string to list of float using regular expression
+            minimum = int(min(price))
+            maximum = int(max(price))
             res = {
-                'result': list(zip(modelNo, name ,price,image))
+                'result': list(zip(modelNo, name ,price,image)),
+                'minimum': minimum,
+                'maximum': maximum
             }
         return render(request,'deepsearchproduct.html',context=res)
     else:
