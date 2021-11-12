@@ -1,9 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView , LogoutView
-from django.core.files.storage import FileSystemStorage
 import requests
-from django.conf import settings
-from requests.models import ReadTimeoutError
 import re
 import numpy as np
 from django.urls import reverse
@@ -122,31 +119,60 @@ def deepsearch(request):
 
 def sparql(request):
     if request.method == 'POST':
-        url = "https://product-discovery-service.herokuapp.com/sparqlEndpoint"
-        query = request.POST.get("main_query")
-        res = requests.post(url,data=query)
-        if(res.status_code   == 500):
-            return render(request, 'sparql.html', context={'flag': True, 'msg': "something went wrong"})
-        model = []
-        name = []
-        price = []
-        image = []
-        res = res.text.split(',')
-        for item  in res:
-            image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
-            index1 = item.find("?ProductName = ") + len("?ProductName = ") +2
-            index2 = item.find('" ) ( ?B') -1
-            model.append(item[index1:index2])
-            index1 = item.find('''?Brand = <http://rdf-dump/eeo/0.1/''') + len('''?Brand = <http://rdf-dump/eeo/0.1/''')
-            index2 = item.find("> ) ( ?Seller")
-            name.append(item[index1:index2])
-            index1 = item.find("?Price = ") + len("?Price = ")
-            index2 = index1 + item[index1:].find('"')
-            temp = item[index2+2:index2+12]
-            index3 = temp.find("^")
-            price.append(item[index2+1:index2+index3] + " €")
+        if(request.POST.get("method") == "sort"):
+            model = request.POST.get("products")
+            method = request.POST["option"] == "sortA"
+            model,name,price,image = zip(*eval(model))
+            model = list(model)
+            name  = list(name)
+            price = list(price)
+            image = list(image)  
+            if(method):
+                arg = np.argsort(price)
+            else:
+                arg = np.argsort(price)[::-1]
+            price = list(np.array(price)[arg])
+            name = list(np.array(name)[arg])
+            image = list(np.array(image)[arg])
+            model = list(np.array(model)[arg])
+            minimum = int(request.POST.get("min"))
+            maximum = int(request.POST.get("max"))
+            res = {
+                'result': list(zip(model, name ,price,image)),
+                'minimum': minimum,
+                'maximum': maximum
+            }
+        else:
+            url = "https://product-discovery-service.herokuapp.com/sparqlEndpoint"
+            query = request.POST.get("main_query")
+            res = requests.post(url,data=query)
+            if(res.status_code   == 500):
+                return render(request, 'sparql.html', context={'flag': True, 'msg': "something went wrong"})
+            model = []
+            name = []
+            price = []
+            image = []
+            res = res.text.split(',')
+            for item  in res:
+                image.append("https://source.unsplash.com/featured/?" +str(len(name))) # temp for images
+                index1 = item.find("?ProductName = ") + len("?ProductName = ") +2
+                index2 = item.find('" ) ( ?B') -1
+                model.append(item[index1:index2])
+                index1 = item.find('''?Brand = <http://rdf-dump/eeo/0.1/''') + len('''?Brand = <http://rdf-dump/eeo/0.1/''')
+                index2 = item.find("> ) ( ?Seller")
+                name.append(item[index1:index2])
+                index1 = item.find("?Price = ") + len("?Price = ")
+                index2 = index1 + item[index1:].find('"')
+                temp = item[index2+2:index2+12]
+                index3 = temp.find("^")
+                price.append(item[index2+1:index2+index3])
+        price = [float(re.findall(r"[-+]?\d*\.\d+|\d+", i)[0]) for i in price] # converting list of string to list of float using regular expression
+        minimum = int(min(price))
+        maximum = int(max(price))
         res = {
             'result': list(zip(model, name ,price,image)),
+            'minimum': minimum,
+            'maximum': maximum
         }
         return render(request,'deepsearchproduct.html',context=res)
     return render(request, 'sparql.html')
@@ -172,3 +198,6 @@ class Login(LoginView):
 
 class LogOut(LogoutView):
     pass
+
+def query(request):
+    return render(request,'query.html')
