@@ -272,7 +272,8 @@
         </div>
         </div>
     </nav>
-
+    <form method="post" action="query">
+    {% csrf_token %}
     <div class="grid grid-cols-2 divide-x divide-yellow-800 bg-yellow-200">
         <div>
             <div class="grid place-items-center h-1/2 relative inline-flex flex-align-middle pt-5">
@@ -292,6 +293,7 @@
             <textarea disabled id="queryArea" class="w-full bg-white rounded rounded-2xl border shadow shadow-xl border-yellow-700 text-yellow-700 dark:text-yellow-300 focus:outline-none h-64 focus:border-yellow-500 text-base px-4 py-2 resize-none block" name="main_query" maxlength="2000"></textarea>
         </div>
     </div>
+    </form>
 
     <footer class="
         flex flex-col
@@ -365,8 +367,7 @@ function schedule(val){
   id = parseInt(val);
   const s = ["PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \nPREFIX owl: <http://www.w3.org/2002/07/owl#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX gr: <http://purl.org/goodrelations/v1#>\nPREFIX eeo: <http://rdf-dump/eeo/0.1/>\nPREFIX schema: <https://schema.org/>\n\nSELECT DISTINCT ?ProductName ?Brand ?Price ?Currency ?Seller ?Quantity\nWHERE {\n?s a gr:ProductOrServiceModel ; dc:title ?ProductName ; eeo:hasSellerQuotation ?SellerQuotationId ; gr:category  eeo:Notebook ; eeo:hasRAM eeo:8GB ; gr:hasBrand ?Brand .\n?SellerQuotationId a rdf:Bag ; eeo:sellerQuotationID ?quotationIds .\n?quotationIds eeo:hasSeller ?Seller; eeo:hasQuantityInStock ?Quantity ; gr:hasPriceSpecification ?ps .\n?ps schema:price ?Price ; schema:currency ?Currency .\nFILTER (?Price <= 800 && ?Quantity > 0)\n}",
   "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX gr: <http://purl.org/goodrelations/v1#>\nPREFIX eeo: <http://rdf-dump/eeo/0.1/>\nPREFIX schema: <https://schema.org/>\n\nSELECT DISTINCT ?ProductName ?Brand ?Price ?Currency ?Seller ?Quantity WHERE {\n?s a gr:ProductOrServiceModel ; dc:title ?ProductName ; eeo:hasSellerQuotation ?SellerQuotationId ; gr:hasBrand ?Brand.\n?SellerQuotationId a rdf:Bag ; eeo:sellerQuotationID ?quotationIds .\n?quotationIds eeo:hasSeller ?Seller; eeo:hasQuantityInStock ?Quantity ; gr:hasPriceSpecification ?ps .\n?ps schema:price ?Price ; schema:currency ?Currency .\nFILTER (?Price = 1099)\n}",
-  'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX gr: <http://purl.org/goodrelations/v1#>\nPREFIX eeo: <http://rdf-dump/eeo/0.1/>\nPREFIX schema: <https://schema.org/>\nSELECT DISTINCT ?ModelNo ?ProductName ?Brand ?Category ?CPU ?RAM ?OS ?ScreenSize ?ScreenType ?GPU ?Weight ?Storage ?ImageURL ?VideoClip ?Price ?Currency ?Seller ?Quantity\nWHERE {\n?s a gr:ProductOrServiceModel ; dc:title ?ProductName ; eeo:hasSellerQuotation ?SellerQuotationId ; gr:hasBrand eeo:Apple ; gr:hasBrand ?Brand ; rdfs:label ?ModelNo ;\ngr:category ?Category ; eeo:hasCPU ?CPU ; eeo:hasOperatingSystem ?OS ; eeo:hasRAM ?RAM ; eeo:hasScreenSize ?ScreenSize ; eeo:hasScreenType ?ScreenType ; eeo:hasGPU ?GPU ; gr:weight \nWeight  ; eeo:hasStorage ?Storage ; schema:image ?ImageURL ; schema:video ?VideoClip.\n?SellerQuotationId a rdf:Bag ; eeo:sellerQuotationID ?quotationIds.\n?quotationIds eeo:hasSeller ?Seller; eeo:hasQuantityInStock ?Quantity ; gr:hasPriceSpecification ?ps .\n?ps schema:price ?Price ; schema:currency ?Currency .\nFILTER (regex((?CPU),  "i5")  && (regex(?GPU, "intel")) )\n}'
-  ];
+  'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dc: <http://purl.org/dc/elements/1.1/>\nPREFIX gr: <http://purl.org/goodrelations/v1#>\nPREFIX eeo: <http://rdf-dump/eeo/0.1/>\nPREFIX schema: <https://schema.org/>\nSELECT DISTINCT ?ModelNo ?ProductName ?Brand ?Category ?CPU ?RAM ?OS ?ScreenSize ?ScreenType ?GPU ?Weight ?Storage ?ImageURL ?VideoClip ?Price ?Currency ?Seller ?Quantity\nWHERE {\n?s a gr:ProductOrServiceModel ; dc:title ?ProductName ; eeo:hasSellerQuotation ?SellerQuotationId ; gr:hasBrand eeo:Apple ; gr:hasBrand ?Brand ; rdfs:label ?ModelNo ;\ngr:category ?Category ; eeo:hasCPU ?CPU ; eeo:hasOperatingSystem ?OS ; eeo:hasRAM ?RAM ; eeo:hasScreenSize ?ScreenSize ; eeo:hasScreenType ?ScreenType ; eeo:hasGPU ?GPU ; gr:weight \nWeight  ; eeo:hasStorage ?Storage ; schema:image ?ImageURL ; schema:video ?VideoClip.\n?SellerQuotationId a rdf:Bag ; eeo:sellerQuotationID ?quotationIds.\n?quotationIds eeo:hasSeller ?Seller; eeo:hasQuantityInStock ?Quantity ; gr:hasPriceSpecification ?ps .\n?ps schema:price ?Price ; schema:currency ?Currency .\nFILTER (regex((?CPU),  "i5")  && (regex(?GPU, "intel")) )\n}'];
   if(id!=0){
     document.getElementById("queryArea").value = s[id-1];
   }else{
